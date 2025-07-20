@@ -1,4 +1,4 @@
-# 2nd-Hand-Shop
+# Thrift-Shop
 
 1. Mohammed Bin Ahmed                  	2233123642
 2. Mahdin Muhammad Jakir               	2232411042
