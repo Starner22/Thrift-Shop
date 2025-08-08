@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile – Thrift Store</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="index.html">Thrift Store</a></h1>
+      <nav>
+        <a href="php/logout.php" style="float: right;">Logout</a>
+        <a href="inventory.html">Browse</a>
+        <a href="cart.html">Cart</a>
+        <a href="wishlist.html">Wishlist</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="container" style="margin-top: 2rem;">
+    <h2>My Profile</h2>
+
+    <form action="php/update_profile.php" method="POST" class="login-form" style="margin-top: 1rem;">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" value="John Doe" required />
+
+      <label for="email">Email</label>
+      <input type="email" name="email" value="john@example.com" required />
+
+      <label for="role">Role</label>
+      <input type="text" name="role" value="Customer" disabled />
+
+      <button type="submit" class="btn-primary">Update Profile</button>
+    </form>
+
+    <div style="margin-top: 2rem;">
+      <h3>Recent Activity</h3>
+      <ul style="list-style: none; padding-left: 0; margin-top: 1rem;">
+        <li><strong>Order #12345</strong> - Denim Jacket - <em>Delivered</em></li>
+        <li><strong>Order #12312</strong> - Wireless Mouse - <em>Shipped</em></li>
+        <li><strong>Sold Item:</strong> Wooden Chair - <em>Approved</em></li>
+      </ul>
+    </div>
+  </section>
+</body>
+</html>
