@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2025 at 04:03 PM
+-- Generation Time: Aug 10, 2025 at 05:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,7 +41,7 @@ CREATE TABLE `analytics` (
   `Report_ID` int(11) NOT NULL,
   `Report_Type` enum('Sales','Stocks','User_Activity') DEFAULT NULL,
   `Report_Data` varchar(255) DEFAULT NULL,
-  `Created_at` date DEFAULT NULL
+  `Created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -101,6 +101,19 @@ CREATE TABLE `customer` (
 
 CREATE TABLE `moderator` (
   `Moderator_ID` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `Notification_ID` int(11) NOT NULL,
+  `Customer_ID` int(11) DEFAULT NULL,
+  `Message` varchar(255) DEFAULT NULL,
+  `Created_At` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -199,6 +212,7 @@ CREATE TABLE `user` (
   `Username` varchar(100) NOT NULL,
   `First_Name` varchar(50) NOT NULL,
   `Last_Name` varchar(50) DEFAULT NULL,
+  `Role` enum('Admin','Moderator','Customer') DEFAULT NULL,
   `Email` varchar(100) NOT NULL,
   `Password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -274,6 +288,13 @@ ALTER TABLE `customer`
 --
 ALTER TABLE `moderator`
   ADD KEY `Moderator_ID` (`Moderator_ID`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`Notification_ID`),
+  ADD KEY `Customer_ID` (`Customer_ID`);
 
 --
 -- Indexes for table `orderitem`
@@ -364,6 +385,12 @@ ALTER TABLE `category`
   MODIFY `Category_ID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `Notification_ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `orderitem`
 --
 ALTER TABLE `orderitem`
@@ -445,6 +472,12 @@ ALTER TABLE `customer`
 --
 ALTER TABLE `moderator`
   ADD CONSTRAINT `moderator_ibfk_1` FOREIGN KEY (`Moderator_ID`) REFERENCES `user` (`User_ID`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`Customer_ID`) REFERENCES `customer` (`Customer_ID`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `orderitem`
