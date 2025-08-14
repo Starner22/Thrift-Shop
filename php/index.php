@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thrift Store</title>
+  <link rel="stylesheet" href="http://localhost/Thrift/Styles/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Thrift Store</h1>
+      <nav>
+        <a href="http://localhost/Thrift/Frontend_html/login.php">Login</a>
+        <a href="http://localhost/Thrift/Frontend_html/register.php">Register</a>
+        <a href="http://localhost/Thrift/Frontend_html/Customer_Browse.php">Browse Items</a>
+      </nav>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="container">
+      <h2>Buy & Sell Pre-Loved Items with Confidence</h2>
+      <p>A secure, reliable, and friendly place to thrift.</p>
+      <a href="register.html" class="btn-primary">Get Started</a>
+    </div>
+  </section>
+  <footer>
+    <p>&copy; 2025 Thrift Store. All rights reserved.</p>
+  </footer>
+</body>
+</html>
