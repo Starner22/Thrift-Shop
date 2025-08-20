@@ -64,6 +64,7 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php if (hasRole('Buyer')): ?>
                         <li><a href="cart.php">Cart <span id="cart-count" class="badge"></span></a></li>
                         <li><a href="wishlist.php">Wishlist</a></li>
+                        <li><a href="notification.php">Notifications</a></li>
                     <?php endif; ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle">Hello, <?php echo htmlspecialchars($_SESSION['user_name']); ?></a>
