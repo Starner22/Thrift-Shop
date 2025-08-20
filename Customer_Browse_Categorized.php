@@ -243,7 +243,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
         </header>
 
         <div class="container search-bar-container">
-            <form method="GET" action="http://localhost/Thrift/Frontend_html/customer_browse_all.php" class="search-form">
+            <form method="GET" action="customer_browse_all.php" class="search-form">
                 <?php
                 echo "<input type='text' name='search' placeholder='Search products...' class='search-input' value='" . ($search_term) . "'>";
                 ?>

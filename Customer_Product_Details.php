@@ -7,23 +7,23 @@ $database = new Database();
 $db = $database->getConnection();
 
 if (isset($_GET['id'])){
-  $product_id = intval($_GET['id']);
+  $productid = intval($_GET['id']);
 } else {
-  $product_id = 0;
+  $productid = 0;
 }
 
-$details_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, p.condition, p.CategoryID, c.name AS category_name
+$details_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, p.description AS description, c.name AS category_name, p.quantity AS quantity
                 FROM Product p
                 LEFT JOIN Categories c ON p.categoryID = c.categoryID
-                WHERE Product_ID = $product_id AND Is_Product_Shown = 'Listed'");
+                WHERE ProductID = $productid");
 $details_sql->execute();
-$result = $details_sql->fetchAll(PDO::FETCH_ASSOC);
+$product = $details_sql->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Second-Hand Shop - <?php echo ($product['Name']); ?></title>
+        <title>Second-Hand Shop - <?php echo ($product['name']); ?></title>
         <link rel='stylesheet' href='Styles/customer_product_details_styles.css'/>
     </head>
     <body>
@@ -67,33 +67,29 @@ $result = $details_sql->fetchAll(PDO::FETCH_ASSOC);
         <div class='container product-details-container'>
             <div class='product-image-section'>
                 <?php
-                echo "<img src='{$product['Image']}' alt='{$product['Name']}'>";
+                echo "<img src='{$product['image']}' alt='{$product['name']}'>";
                 ?>
             </div>
 
             <div class='product-info-section'>
-                <h2 class='product-name'><?php echo ($product['Name']); ?></h2>
-                <p class='product-price'> $ <?php echo number_format($product['Price'], 2); ?></p>
+                <h2 class='product-name'><?php echo ($product['name']); ?></h2>
+                <p class='product-price'> $ <?php echo number_format($product['price'], 2); ?></p>
 
                 <div class='description-box'>
                     <h4>Description</h4>
-                    <p><?= ($product['Description']); ?></p>
+                    <p><?= ($product['description']); ?></p>
                 </div>
 
-                <div class='product-actions'>
-                    <form action='http://localhost/Thrift/Frontend_html/Cart.php' method='POST' class='add-to-cart-form'>
-                        <input type='hidden' name='product_id' value='<?= $product['ID']; ?>'>
-                        <button type='submit' class='btn-purchase'>Add to Cart</button>
-                    </form>
-
-                    <a href='http://localhost/Thrift/Frontend_html/Wishlist.php?add=<?= $product['ID']; ?>' class='btn-wishlist'>
-                        Add to Wishlist
-                        <span class='wishlist-notification'>&hearts;</span>
-                    </a>
-                </div>
+                <?php if (isLoggedIn() && hasRole('Buyer')): ?>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="addToCart(<?php echo $product['ID']; ?>, this)" <?php echo ($product['quantity'] <= 0) ? 'disabled' : ''; ?>>
+                            <?php echo ($product['quantity'] <= 0) ? 'Out of Stock' : 'Add to Cart'; ?>
+                        </button>
+                        <button class="btn btn-outline" onclick="addToWishlist(<?php echo $product['ID']; ?>, this)">❤️</button>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
+        <script src="assets/js/main.js"></script>
     </body>
 </html>
-
-<?php $conn->close(); ?>
