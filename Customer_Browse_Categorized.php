@@ -3,7 +3,7 @@
 require_once 'config/database.php';
 require_once 'includes/auth.php';
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 
 $category_id = $_GET['category'];
@@ -100,7 +100,7 @@ if ($cat_row) {
     // Concrete Component A
     class BaseFilter implements Filter {
         public function build(): string {
-            return " WHERE 1=1";
+            return "  WHERE p.status = 'approved'";
         }
     }
     // Concrete Component B
@@ -112,7 +112,7 @@ if ($cat_row) {
         }
 
         public function build(): string {
-            return " WHERE p.categoryID = " . $this->categoryId;
+            return " WHERE p.status = 'approved' AND p.categoryID = " . $this->categoryId;
         }
     }
     // Decorator Interface (or Abstract)
@@ -195,7 +195,7 @@ if ($cat_row) {
     $Decorator_Filter = $filter->build();
 // Filters should be ready to use in sql
 
-$sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
+$sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, p.quantity AS quantity, c.name AS category_name
                 FROM Product p
                 LEFT JOIN Categories c ON p.categoryID = c.categoryID"
                 . $Decorator_Filter ." ". $Strategy_Sort);
@@ -208,13 +208,13 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Second-Hand Shop - <?php echo $category_name; ?></title>
+        <title>Thrift Store - <?php echo $category_name; ?></title>
         <link rel="stylesheet" href="Styles/customer_browse_all_styles.css"/>
     </head>
     <body>
         <header>
             <nav>
-                <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+                <a href="index.php" class="logo">🛍️ Thrift Store</a>
                 <ul class="nav-links">
                     <li><a href="index.php">Home</a></li>
                     <?php if (isLoggedIn()): ?>
@@ -255,7 +255,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="browse-main container">
             <aside class="sidebar">
-                <form method="GET" action="http://localhost/Thrift/Frontend_html/customer_browse_categorized.php">
+                <form method="GET" action="customer_browse_categorized.php">
                     <?php 
                     echo "<input type='hidden' name='category' value='" . $category_id . "'>"; 
                     echo "<input type='hidden' name='search' value='" . $search_term . "'>"; 
@@ -275,7 +275,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                     <h4>Quality</h4>
                     <div class="filter-group">
                         <?php
-                        $qualities = ['Excellent', 'Good', 'Normal', 'Poor'];
+                        $qualities = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
                         foreach ($qualities as $quality){
                             $checked = in_array($quality, $quality_filter) ? 'checked' : '';
                             echo "<label class='checkbox-label'>";
@@ -302,8 +302,6 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                             echo "<option value='name_desc' " . ($sort_option === 'name_desc' ? 'selected' : '') . ">Name Z-A</option>";
                             echo "<option value='price_asc' " . ($sort_option === 'price_asc' ? 'selected' : '') . ">Price Low to High</option>";
                             echo "<option value='price_desc' " . ($sort_option === 'price_desc' ? 'selected' : '') . ">Price High to Low</option>";
-                            echo "<option value='price_asc' " . ($sort_option === 'popularity_asc' ? 'selected' : '') . ">Popularity Low to High</option>";
-                            echo "<option value='price_desc' " . ($sort_option === 'popularity_desc' ? 'selected' : '') . ">Popularity High to Low</option>";
                         echo "</select>";
                         echo "<input type='hidden' name='search' value='" . ($search_term) . "'>";
                         echo "<input type='hidden' name='min_price' value='" . ($min_price) . "'>";
@@ -325,6 +323,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                             echo "<h3>" . ($product['name']) . "</h3>";
                             echo "<p class='product-category'>" . ($product['category_name'] ?? 'Uncategorized') . "</p>";
                             echo "<p>$" . number_format($product['price'], 2) . "</p>";
+                            echo "<p> Quantity: " . ($product['quantity']) . "</p>";
                             echo "<a href='Customer_Product_Details.php?id={$product['ID']}' class='btn-primary'>View Details</a>";
                             echo "</div></div>";
                         }

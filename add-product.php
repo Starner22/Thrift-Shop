@@ -113,7 +113,7 @@ $common_conditions = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product - Second-Hand Shop</title>
+    <title>Add Product - Thrift Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>

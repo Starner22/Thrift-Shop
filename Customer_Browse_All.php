@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 require_once 'includes/auth.php';
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 
 // Strategy DP Implementation
@@ -87,7 +87,7 @@ $db = $database->getConnection();
     // Concrete Component A
     class BaseFilter implements Filter {
         public function build(): string {
-            return " WHERE 1=1";
+            return "  WHERE p.status = 'approved'";
         }
     }
     // Concrete Component B
@@ -99,7 +99,7 @@ $db = $database->getConnection();
         }
 
         public function build(): string {
-            return " WHERE p.categoryID = " . $this->categoryId;
+            return " WHERE p.status = 'approved' AND p.categoryID = " . $this->categoryId;
         }
     }
     // Decorator Interface (or Abstract)
@@ -180,7 +180,7 @@ $db = $database->getConnection();
     $Decorator_Filter = $filter->build();
 // Filters should be ready to use in sql
 
-$sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
+$sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, p.quantity AS quantity, c.name AS category_name
                 FROM Product p
                 LEFT JOIN Categories c ON p.categoryID = c.categoryID"
                 . $Decorator_Filter ." ". $Strategy_Sort);
@@ -194,13 +194,13 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Second-Hand Shop - All Products</title>
+        <title>Thrift Store - All Products</title>
         <link rel="stylesheet" href="Styles/customer_browse_all_styles.css"/>
     </head>
     <body>
         <header>
             <nav>
-                <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+                <a href="index.php" class="logo">🛍️ Thrift Store</a>
                 <ul class="nav-links">
                     <li><a href="index.php">Home</a></li>
                     <?php if (isLoggedIn()): ?>
@@ -260,7 +260,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                     <h4>Quality</h4>
                     <div class="filter-group">
                         <?php
-                        $qualities = ['Excellent', 'Good', 'Normal', 'Subpar'];
+                        $qualities = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
                         foreach ($qualities as $quality){
                             $checked = in_array($quality, $quality_filter) ? 'checked' : '';
                             echo "<label class='checkbox-label'>";
@@ -307,6 +307,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                             echo "<h3>" . ($product['name']) . "</h3>";
                             echo "<p class='product-category'>" . ($product['category_name'] ?? 'Uncategorized') . "</p>";
                             echo "<p>$" . number_format($product['price'], 2) . "</p>";
+                            echo "<p> Quantity: " . ($product['quantity']) . "</p>";
                             echo "<a href='Customer_Product_Details.php?id={$product['ID']}' class='btn-primary'>View Details</a>";
                             echo "</div></div>";
                         }

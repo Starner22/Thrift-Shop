@@ -6,21 +6,14 @@ $database = Database::getInstance();
 $db = $database->getConnection();
 
 
-$new_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
+$new_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, p.quantity AS quantity, c.name AS category_name
             FROM Product p
             LEFT JOIN Categories c ON p.categoryID = c.categoryID
-            ORDER BY p.price DESC
+            WHERE p.status = 'approved'
+            ORDER BY p.created_at DESC
             LIMIT 12");
 $new_sql->execute();
 $new_arrivals = $new_sql->fetchAll(PDO::FETCH_ASSOC);
-
-$popular_sql =  $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
-                FROM Product p
-                LEFT JOIN Categories c ON p.categoryID = c.categoryID
-                ORDER BY p.price DESC
-                LIMIT 12");
-$popular_sql->execute();
-$popular_products =  $popular_sql->fetchAll(PDO::FETCH_ASSOC);
 
 $all_category_sql = $db->prepare("SELECT categoryID, Name , image_path FROM Categories");
 $all_category_sql->execute();
@@ -34,13 +27,13 @@ $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Second-Hand Shop - Home</title>
+    <title>Thrift Store - Home</title>
     <link rel="stylesheet" href="Styles/product_browse_style.css">
 </head>
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ 🛍️Thrift Store</a>
+            <a href="index.php" class="logo">🛍️ Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <?php if (isLoggedIn()): ?>
@@ -109,6 +102,7 @@ $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
                         echo "<h3>" . ($product['name']) . "</h3>";
                         echo "<p class='product-category'>" . ($product['category_name'] ?? 'Uncategorized') . "</p>";
                         echo "<p>$" . number_format($product['price'], 2) . "</p>";
+                        echo "<p> Quantity: " . ($product['quantity']) . "</p>";
                         echo "<a href='Customer_Product_Details.php?id={$product['ID']}' class='btn-primary'>View Details</a>";
                         echo "</div></div>";
                     }

@@ -61,7 +61,7 @@ if ($user_role === 'Buyer') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Second-Hand Shop</title>
+    <title>Dashboard - Thrift Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>

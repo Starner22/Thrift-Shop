@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2025 at 02:30 AM
+-- Generation Time: Aug 20, 2025 at 06:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -63,17 +63,35 @@ CREATE TABLE `cartitem` (
 
 CREATE TABLE `categories` (
   `categoryID` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  `image_path` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`categoryID`, `name`) VALUES
-(2, 'CPU'),
-(1, 'GPU'),
-(3, 'Motherboard');
+INSERT INTO `categories` (`categoryID`, `name`, `image_path`) VALUES
+(4, 'Electronics', 'uploads/1.jpg'),
+(5, 'Clothing & Apparel', 'uploads/1.jpg'),
+(6, 'Home & Garden', 'uploads/1.jpg'),
+(7, 'Furniture', 'uploads/1.jpg'),
+(8, 'Books, Movies & Music', 'uploads/1.jpg'),
+(9, 'Sporting Goods', 'uploads/1.jpg'),
+(10, 'Toys & Hobbies', 'uploads/1.jpg'),
+(11, 'Kitchenware', 'uploads/1.jpg'),
+(12, 'Automotive', 'uploads/1.jpg'),
+(13, 'Health & Beauty', 'uploads/1.jpg'),
+(14, 'Jewelry & Watches', 'uploads/1.jpg'),
+(15, 'Pet Supplies', 'uploads/1.jpg'),
+(16, 'Musical Instruments', 'uploads/1.jpg'),
+(17, 'Crafts & DIY Supplies', 'uploads/1.jpg'),
+(18, 'Baby & Kids', 'uploads/1.jpg'),
+(19, 'Vintage & Collectibles', 'uploads/1.jpg'),
+(20, 'Appliances', 'uploads/1.jpg'),
+(21, 'Tools & Hardware', 'uploads/1.jpg'),
+(22, 'Art Supplies', 'uploads/1.jpg'),
+(23, 'Office Supplies', 'uploads/1.jpg');
 
 -- --------------------------------------------------------
 
@@ -119,19 +137,6 @@ CREATE TABLE `orderitem` (
   `quantity` int(11) NOT NULL,
   `price_at_purchase` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `orderitem`
---
-
-INSERT INTO `orderitem` (`orderItemID`, `orderID`, `productID`, `quantity`, `price_at_purchase`) VALUES
-(1, 1, 1, 2, 5000.00),
-(2, 2, 1, 1, 5000.00),
-(3, 3, 1, 2, 5000.00),
-(4, 4, 1, 1, 5000.00),
-(5, 5, 4, 1, 100.00),
-(6, 6, 4, 2, 100.00),
-(7, 7, 4, 2, 100.00);
 
 -- --------------------------------------------------------
 
@@ -193,7 +198,7 @@ CREATE TABLE `product` (
   `name` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
-  `condition` varchar(100) DEFAULT NULL,
+  `condition` enum('Excellent','Good','Normal','Subpar') DEFAULT 'Normal',
   `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
   `categoryID` int(11) DEFAULT NULL,
   `image_path` varchar(255) DEFAULT NULL,
@@ -208,10 +213,26 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`productID`, `name`, `description`, `price`, `condition`, `quantity`, `categoryID`, `image_path`, `sellerID`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Nvidia arc 6700xt', 'Not scam at all', 5000.00, 'Like New', 0, 1, NULL, 3, 'approved', '2025-08-13 20:30:27', '2025-08-13 23:27:14'),
-(3, 'Vintage leather jacket', 'drew mcintyre', 200.00, 'Good', 1, NULL, NULL, 4, 'approved', '2025-08-13 22:20:16', '2025-08-13 22:51:05'),
-(4, 'Intel B450M', 'Authentic motherboard from amd and intel. 100% no scam', 100.00, 'Like New', 1, 3, 'uploads/prod_689d22b081834_Screenshot 2025-06-28 224543.png', 4, 'approved', '2025-08-13 23:24:32', '2025-08-14 00:16:25'),
-(5, 'Robot', 'ekdom robot', 100.00, 'Very Good', 10, 2, 'uploads/prod_689d256a7c500_Screenshot (1).png', 4, 'approved', '2025-08-13 23:36:08', '2025-08-14 00:26:39');
+(46, 'Vintage Leather Jacket', 'A classic leather jacket in good condition.', 75.00, 'Good', 11, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(47, 'Acoustic Guitar', 'Well-maintained acoustic guitar, perfect for beginners.', 120.00, 'Excellent', 11, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(48, 'Used Computer Monitor', 'A 24-inch monitor with minor signs of wear.', 80.00, 'Normal', 11, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(49, 'Antique Wooden Chair', 'A sturdy wooden chair with a unique design.', 45.00, 'Subpar', 11, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(50, 'Complete Series DVD Set', 'The complete series of a popular TV show.', 25.00, 'Good', 11, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(51, 'Exercise Bike', 'A well-functioning exercise bike for home workouts.', 150.00, 'Good', 11, 6, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(52, 'Board Game Collection', 'A lot of assorted board games, some new, some used.', 30.00, 'Normal', 12, 7, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(53, 'Cast Iron Skillet', 'A seasoned cast iron skillet, ready to use.', 20.00, 'Good', 12, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(54, 'Car Floor Mats (Set)', 'A set of used but clean car floor mats.', 15.00, 'Normal', 12, 6, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(55, 'Handheld Blender', 'A powerful handheld blender with all accessories.', 35.00, 'Excellent', 12, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(56, 'Digital Camera', 'A compact digital camera with a memory card.', 90.00, 'Good', 4, 6, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(57, 'Silver Necklace', 'A delicate silver chain necklace.', 50.00, 'Excellent', 4, 6, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(58, 'Hardcover Book Set', 'A collection of classic literature in hardcover.', 40.00, 'Good', 4, 7, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(59, 'Dog Carrier Crate', 'A small dog carrier, perfect for vet visits.', 25.00, 'Normal', 5, 7, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(60, 'Art Easel', 'A portable wooden art easel with some paint stains.', 30.00, 'Normal', 6, 7, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(61, 'Wireless Mouse', 'A used wireless mouse with a USB receiver.', 10.00, 'Good', 5, 7, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(62, 'T-Shirt Lot', 'A bundle of assorted men\'s t-shirts.', 20.00, 'Good', 5, 5, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(63, 'Desk Lamp', 'A modern desk lamp with an adjustable neck.', 18.00, 'Excellent', 5, 6, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(64, 'Vintage Tea Set', 'A decorative tea set with floral patterns.', 60.00, 'Good', 5, 8, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44'),
+(65, 'Power Drill Kit', 'A power drill with a variety of bits and a carrying case.', 55.00, 'Good', 6, 8, 'uploads/1.jpg', 4, 'approved', '2025-08-20 16:53:44', '2025-08-20 16:53:44');
 
 -- --------------------------------------------------------
 
@@ -293,13 +314,6 @@ CREATE TABLE `wishlistitem` (
   `wishlistID` int(11) NOT NULL,
   `productID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `wishlistitem`
---
-
-INSERT INTO `wishlistitem` (`wishlistItemID`, `wishlistID`, `productID`) VALUES
-(1, 2, 1);
 
 --
 -- Indexes for dumped tables
@@ -413,7 +427,7 @@ ALTER TABLE `cartitem`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `categoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `categoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `order`
@@ -443,7 +457,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `productID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `productID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `supportticket`

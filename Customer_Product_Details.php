@@ -3,7 +3,7 @@
 require_once 'config/database.php';
 require_once 'includes/auth.php';
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 
 if (isset($_GET['id'])){
@@ -23,13 +23,13 @@ $product = $details_sql->fetch(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Second-Hand Shop - <?php echo ($product['name']); ?></title>
+        <title>Thrift Store - <?php echo ($product['name']); ?></title>
         <link rel='stylesheet' href='Styles/customer_product_details_styles.css'/>
     </head>
     <body>
         <header>
             <nav>
-                <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+                <a href="index.php" class="logo">🛍️ Thrift Store</a>
                 <ul class="nav-links">
                     <li><a href="index.php">Home</a></li>
                     <?php if (isLoggedIn()): ?>
