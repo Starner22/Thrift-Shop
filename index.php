@@ -137,7 +137,7 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <button class="btn btn-primary" onclick="addToCart(<?php echo $product['productID']; ?>, this)" <?php echo ($product['quantity'] <= 0) ? 'disabled' : ''; ?>>
                                         <?php echo ($product['quantity'] <= 0) ? 'Out of Stock' : 'Add to Cart'; ?>
                                     </button>
-                                    <button class="btn btn-outline" onclick="addToWishlist(<?php echo $product['productID']; ?>, this)">❤️</button>
+                                        <button class="btn btn-outline" onclick="addToWishlist(<?php echo $product['productID']; ?>, this)">❤️</button>
                                 </div>
                             <?php endif; ?>
                         </div>
