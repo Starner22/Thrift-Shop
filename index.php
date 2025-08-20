@@ -1,56 +1,31 @@
 <?php
 require_once 'config/database.php';
 require_once 'includes/auth.php';
-require_once 'includes/builders/ProductQueryBuilder.php';
-
-
-
-
-
-
-
-
-
-
-
-
 
 $database = new Database();
 $db = $database->getConnection();
 
-$search = $_GET['search'] ?? '';
-$category_filter = (int)($_GET['category'] ?? 0);
-$price_range = $_GET['price_range'] ?? '';
 
-$queryBuilder = new ProductQueryBuilder($db);
-$products = $queryBuilder->search($search)
-                         ->category($category_filter)
-                         ->priceRange($price_range)
-                         ->fetchAll();
+$new_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
+            FROM Product p
+            LEFT JOIN Categories c ON p.categoryID = c.categoryID
+            ORDER BY p.price DESC
+            LIMIT 12");
+$new_sql->execute();
+$new_arrivals = $new_sql->fetchAll(PDO::FETCH_ASSOC);
 
-$categories_stmt = $db->prepare("SELECT * FROM categories ORDER BY name ASC");
-$categories_stmt->execute();
-$categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
+$popular_sql =  $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS price, p.image_path AS image, c.name AS category_name
+                FROM Product p
+                LEFT JOIN Categories c ON p.categoryID = c.categoryID
+                ORDER BY p.price DESC
+                LIMIT 12");
+$popular_sql->execute();
+$popular_products =  $popular_sql->fetchAll(PDO::FETCH_ASSOC);
+
+$all_category_sql = $db->prepare("SELECT categoryID, Name , image_path FROM Categories");
+$all_category_sql->execute();
+$all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -60,7 +35,7 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Second-Hand Shop - Home</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="Styles/product_browse_style.css">
 </head>
 <body>
     <header>
@@ -75,7 +50,7 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
                         <li><a href="wishlist.php">Wishlist</a></li>
                     <?php endif; ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle">Hello, <?php echo htmlspecialchars($_SESSION['user_name']); ?></a>
+                        <a href="#" class="dropdown-toggle">Hello, <?php echo ($_SESSION['user_name']); ?></a>
                         <ul class="dropdown-menu">
                             <li><a href="profile.php">My Profile</a></li>
                             <?php if (hasRole('Buyer')): ?>
@@ -93,67 +68,57 @@ $categories = $categories_stmt->fetchAll(PDO::FETCH_ASSOC);
         </nav>
     </header>
 
-    <div class="container">
-        <div class="card search-filter">
-            <form action="index.php" method="GET" class="filter-row">
-                <div class="form-group">
-                    <input type="text" id="search" name="search" placeholder="Search by name or description..." 
-                           value="<?php echo htmlspecialchars($search); ?>">
-                </div>
-                <div class="form-group">
-                    <select id="category" name="category">
-                        <option value="">All Categories</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?php echo $category['categoryID']; ?>" <?php echo ($category_filter == $category['categoryID']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($category['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <select id="price_range" name="price_range">
-                        <option value="">All Prices</option>
-                        <option value="under_50" <?php echo ($price_range === 'under_50') ? 'selected' : ''; ?>>Under $50</option>
-                        <option value="50_100" <?php echo ($price_range === '50_100') ? 'selected' : ''; ?>>$50 - $100</option>
-                        <option value="100_500" <?php echo ($price_range === '100_500') ? 'selected' : ''; ?>>$100 - $500</option>
-                        <option value="over_500" <?php echo ($price_range === 'over_500') ? 'selected' : ''; ?>>Over $500</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
+    <div class="container search-bar-container">
+            <form method="GET" action="customer_browse_all.php" class="search-form">
+                <input type="text" name="search" placeholder="Search products..." class="search-input">
+                <button type="submit" class="search-button">
+                    Search
+                </button>
             </form>
-        </div>
+    </div>
 
-        <div class="card">
-            <h2>Available Products (<?php echo count($products); ?>)</h2>
-            <?php if (empty($products)): ?>
-                <p>No products found. Try adjusting your search criteria.</p>
-            <?php else: ?>
-                <div class="product-grid">
-                    <?php foreach ($products as $product): ?>
-                        <div class="product-card">
-                            <img src="<?php echo htmlspecialchars($product['image_path'] ?? 'assets/images/placeholder.png'); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image" style="height: 200px; object-fit: cover;">
-                            <div class="product-title"><?php echo htmlspecialchars($product['name']); ?></div>
-                            <div class="product-condition" style="background-color: #667eea; color: white;"><?php echo htmlspecialchars($product['category_name'] ?? 'Uncategorized'); ?></div>
-                            <div class="product-price">$<?php echo number_format($product['price'], 2); ?></div>
-                            <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
-                            <div class="product-stock" style="margin-top: auto; color: #6c757d; font-weight: bold;">
-                                <?php echo ($product['quantity'] > 0) ? "{$product['quantity']} left in stock" : 'Out of stock'; ?>
-                            </div>
-                            <?php if (isLoggedIn() && hasRole('Buyer')): ?>
-                                <div class="btn-group">
-                                    <button class="btn btn-primary" onclick="addToCart(<?php echo $product['productID']; ?>, this)" <?php echo ($product['quantity'] <= 0) ? 'disabled' : ''; ?>>
-                                        <?php echo ($product['quantity'] <= 0) ? 'Out of Stock' : 'Add to Cart'; ?>
-                                    </button>
-                                    <button class="btn btn-outline" onclick="addToWishlist(<?php echo $product['productID']; ?>, this)">❤️</button>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
+    <div class="main-content container">
+        <section class="content-area">
+            <h2 class="section-heading">Categories</h2>
+            <div class="category-grid">
+                <a href="customer_browse_all.php" class="category-box">
+                    <span>All</span>
+                </a>
+                <?php
+                if (!empty($all_category)) {    
+                    foreach ($all_category as $category) {
+                        echo "<a href='customer_browse_categorized.php?category=" . $category['categoryID'] . "' class='category-box'>";
+                        echo "<img src='{$category['image_path']}' alt='" . ($category['Name']) . "' class='product-img'>";
+                        echo "<span>" . ($category['Name']) . "</span>";
+                        echo "</a>";
+                    } 
+                } else {
+                    echo "<p>No categories found.</p>";
+                }
+                ?>
+            </div>   
+
+            <h2 class="section-heading">New Arrivals</h2>
+            <div class="product-grid">
+                <?php
+                if (!empty($new_arrivals)) {
+                    foreach ($new_arrivals as $product) {
+                        echo "<div class='card'>";
+                        echo "<img src='{$product['image']}' alt='" . ($product['name']) . "' class='product-img'>";
+                        echo "<div class='card-content'>";
+                        echo "<h3>" . ($product['name']) . "</h3>";
+                        echo "<p class='product-category'>" . ($product['category_name'] ?? 'Uncategorized') . "</p>";
+                        echo "<p>$" . number_format($product['price'], 2) . "</p>";
+                        echo "<a href='Customer_Product_Details.php?id={$product['ID']}' class='btn-primary'>View Details</a>";
+                        echo "</div></div>";
+                    }
+                } else {
+                    echo "<p>No new products found.</p>";
+                }
+                ?>
+            </div>
+
+        </section>
     </div>
     
     <script src="assets/js/main.js"></script>
