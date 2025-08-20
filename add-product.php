@@ -5,7 +5,7 @@ require_once 'includes/auth.php';
 requireAuth('Seller');
 
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 $user_id = getUserId();
 
@@ -119,7 +119,7 @@ $common_conditions = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️ Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="dashboard.php">Dashboard</a></li>

@@ -11,7 +11,7 @@ requireAuth();
 
 
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 $user_id = getUserId();
 
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️ Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="dashboard.php">Dashboard</a></li>

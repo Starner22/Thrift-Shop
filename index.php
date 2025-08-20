@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 require_once 'includes/auth.php';
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 
 
@@ -40,7 +40,7 @@ $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️ 🛍️Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <?php if (isLoggedIn()): ?>

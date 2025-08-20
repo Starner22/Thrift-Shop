@@ -9,7 +9,7 @@ requireAuth('Seller');
 
 
 
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 $user_id = getUserId();
 $error = '';
@@ -106,7 +106,7 @@ $common_conditions = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="my-products.php">Back to My Products</a></li>
             </ul>

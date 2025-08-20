@@ -1,4 +1,4 @@
-
+// --- BUG FIX: Use a consistent base path for all API calls ---
 const API_BASE_URL = '/shop/api';
 
 async function fetchApi(endpoint, options = {}) {
@@ -26,7 +26,8 @@ function showAlert(message, type = 'success') {
     setTimeout(() => alert.remove(), 5000);
 }
 
-
+// --- Cart Functions ---
+// FIX: Accept the button element directly as a parameter instead of using getElementById
 async function addToCart(productId, button) {
     if (!button || button.disabled) return;
     const originalText = button.innerHTML;
@@ -75,46 +76,113 @@ async function updateCartCount() {
         cartCountElement.textContent = data.count > 0 ? data.count : '';
         cartCountElement.style.display = data.count > 0 ? 'inline' : 'none';
     } catch (error) {
-       
+        // Fail silently
     }
 }
-
-
-async function addToWishlist(productId, button) {
-    if (!button || button.disabled) return;
-    const originalText = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<span class="loading"></span>';
-
-    try {
-         const data = await fetchApi('wishlist.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'add', product_id: productId })
-        });
+function addToCart(productID, button) {
+    fetch("add_to_cart.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "productID=" + productID
+    })
+    .then(response => response.json())
+    .then(data => {
         if (data.success) {
-            showAlert('Added to wishlist!', 'success');
-            button.innerHTML = '❤️'; 
-            return;
+            button.innerText = "✔ Added";
+            button.disabled = true;
+
+            // optional: update cart badge
+            let badge = document.getElementById("cart-count");
+            if (badge) {
+                let count = parseInt(badge.innerText) || 0;
+                badge.innerText = count + 1;
+            }
+        } else {
+            alert(data.message);
         }
-    } finally {
-        setTimeout(() => {
-            button.disabled = false;
-            button.innerHTML = originalText;
-        }, 2000);
+    })
+    .catch(err => console.error(err));
+}
+
+function removeFromCart(cartItemID) {
+    if (!confirm("Remove this item from your cart?")) return;
+
+    fetch("remove_from_cart.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "cartItemID=" + cartItemID
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+function updateQuantity(cartItemID, quantity) {
+    fetch("update_cart_quantity.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "cartItemID=" + cartItemID + "&quantity=" + quantity
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+// --- Wishlist Functions ---
+// FIX: Accept the button element directly as a parameter
+function addToWishlist(productID, button) {
+    fetch("add_to_wishlist.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "productID=" + productID
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.innerText = "❤️ Added";
+            button.disabled = true;
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+function removeFromWishlist(productID) {
+    if (!confirm("Are you sure you want to remove this item from your wishlist?")) {
+        return;
     }
+
+    fetch("remove_from_wishlist.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "productID=" + productID
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload page so item disappears
+            location.reload();
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error(err));
 }
 
-function removeFromWishlist(productId) {
-    if (!confirm('Remove this item from your wishlist?')) return;
-    fetchApi('wishlist.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `action=remove&productId=${productId}`
-    }).then(() => location.reload());
-}
-
-
+// --- Checkout ---
 function checkout() {
     window.location.href = 'checkout.php';
 }

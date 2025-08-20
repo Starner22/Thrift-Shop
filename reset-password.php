@@ -1,5 +1,4 @@
 <?php
-// --- FIX: Add the database configuration file ---
 require_once 'config/database.php';
 
 $token = $_GET['token'] ?? '';
@@ -9,10 +8,8 @@ $success = '';
 if (empty($token)) {
     $error = "Invalid reset link. No token provided.";
 } else {
-
-    $database = new Database();
+    $database = Database::getInstance();
     $db = $database->getConnection();
-
 
     $stmt = $db->prepare("SELECT * FROM password_resets WHERE token = ? AND expires_at > NOW()");
     $stmt->execute([$token]);
@@ -21,7 +18,6 @@ if (empty($token)) {
     if (!$reset_request) {
         $error = "This password reset link is invalid or has expired.";
     } else {
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $password = $_POST['password'];
             $confirm_password = $_POST['confirm_password'];
@@ -31,12 +27,10 @@ if (empty($token)) {
             } elseif (strlen($password) < 6) {
                 $error = "Password must be at least 6 characters long.";
             } else {
-                // Update the user's password in the `user` table
                 $new_hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 $update_stmt = $db->prepare("UPDATE user SET password = ? WHERE email = ?");
                 
                 if ($update_stmt->execute([$new_hashed_password, $reset_request['email']])) {
-                    // Password updated, now delete the token so it can't be reused
                     $db->prepare("DELETE FROM password_resets WHERE token = ?")->execute([$token]);
                     $success = "Your password has been reset successfully! <a href='login.php'>You can now log in.</a>";
                 } else {
@@ -47,34 +41,6 @@ if (empty($token)) {
     }
 }
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

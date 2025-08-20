@@ -7,14 +7,7 @@ require_once 'includes/strategies/PayPalStrategy.php';
 
 requireAuth('Buyer');
 
-
-
-
-
-
-
-
-$database = new Database();
+$database = Database::getInstance();
 $db = $database->getConnection();
 $user_id = getUserId();
 $error = '';
@@ -69,20 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

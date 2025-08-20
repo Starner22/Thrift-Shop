@@ -4,41 +4,33 @@ require_once 'config/database.php';
 $message = '';
 $error = '';
 
-
-
-
-
-
-
-
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } else {
-        $database = new Database();
+        $database = Database::getInstance();
         $db = $database->getConnection();
 
         $stmt = $db->prepare("SELECT userID FROM user WHERE email = ?");
         $stmt->execute([$email]);
         
         if ($stmt->fetch()) {
-            $token = bin2hex(random_bytes(50));
-            $expires = new DateTime('NOW');
-            $expires->add(new DateInterval('PT1H'));
-            $expires_at = $expires->format('Y-m-d H:i:s');
+    $token = bin2hex(random_bytes(50));
 
-            $insert_stmt = $db->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, ?)");
-            $insert_stmt->execute([$email, $token, $expires_at]);
+    // Let MySQL generate expiry (1 hour from NOW)
+    $insert_stmt = $db->prepare("
+        INSERT INTO password_resets (email, token, expires_at)
+        VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))
+    ");
+    $insert_stmt->execute([$email, $token]);
 
-            $reset_link = "http://localhost/shop/reset-password.php?token=" . $token;
-            $message = "A password reset link has been generated. In a real application, this would be emailed to you. For now, please use this link: <br><a href='{$reset_link}'>{$reset_link}</a>";
+    $reset_link = "http://localhost/shop/reset-password.php?token=" . $token;
+    $message = "A password reset link has been generated. In a real application, this would be emailed to you. For now, please use this link: <br><a href='{$reset_link}'>{$reset_link}</a>";
+} else {
+    $message = "If an account with that email exists, a password reset link has been generated.";
+}
 
-        } else {
-            $message = "If an account with that email exists, a password reset link has been generated.";
-        }
     }
 }
 ?>
@@ -61,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️ Thirft Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="login.php">Login</a></li>
