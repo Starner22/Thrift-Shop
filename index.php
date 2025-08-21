@@ -14,8 +14,7 @@ $new_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS pr
             LIMIT 12");
 $new_sql->execute();
 $new_arrivals = $new_sql->fetchAll(PDO::FETCH_ASSOC);
-
-$all_category_sql = $db->prepare("SELECT categoryID, Name , image_path FROM Categories");
+$all_category_sql = $db->prepare("SELECT categoryID, Name FROM Categories");
 $all_category_sql->execute();
 $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
 ?>

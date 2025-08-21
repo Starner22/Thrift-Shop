@@ -1,5 +1,5 @@
 // --- BUG FIX: Use a consistent base path for all API calls ---
-const API_BASE_URL = '/shop/api';
+const API_BASE_URL = '/Thrift-Shop-main/api';
 
 async function fetchApi(endpoint, options = {}) {
     try {

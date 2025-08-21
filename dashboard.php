@@ -41,9 +41,9 @@ if ($user_role === 'Buyer') {
                            COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_products 
                        FROM product 
                        WHERE sellerID = ?";
-    $products_stmt = $db->prepare($products_query);
-    $products_stmt->execute([$user_id]);
-    $stats = $products_stmt->fetch(PDO::FETCH_ASSOC);
+                     $products_stmt = $db->prepare($products_query);
+                    $products_stmt->execute([$user_id]);
+                    $stats = $products_stmt->fetch(PDO::FETCH_ASSOC);
 } elseif (in_array($user_role, ['Admin', 'Moderator'])) {
     // Admin/Moderator stats
     $admin_query = "SELECT 
@@ -67,12 +67,24 @@ if ($user_role === 'Buyer') {
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️Thrift Store</a>
+            <a href="index.php" class="logo">🛍️ Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="dashboard.php">Dashboard</a></li>
-
+                    <?php if (hasRole('Seller') || hasRole('Buyer')): ?>
+                 <li><a href="notification.php">Notifications</a></li>
+<?php endif; ?>
+            <?php
+            // show unread count badge
+            $countStmt = $db->prepare("SELECT COUNT(*) as unreadCount FROM notifications WHERE userID=? AND isRead=0");
+            $countStmt->execute([$user_id]);
+            $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);            
+                if ($countResult && $countResult['unreadCount'] > 0) {
+                  echo '<span class="badge">'.$countResult['unreadCount'].'</span>';
+            }
+          ?>
+                    </a></li>
                     <?php if (hasRole('Admin')): ?>
                         <li><a href="admin/products.php">Products</a></li>
                         <li><a href="admin/orders.php">Orders</a></li>
