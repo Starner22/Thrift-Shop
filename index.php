@@ -81,7 +81,6 @@ $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
                 if (!empty($all_category)) {    
                     foreach ($all_category as $category) {
                         echo "<a href='customer_browse_categorized.php?category=" . $category['categoryID'] . "' class='category-box'>";
-                        echo "<img src='{$category['image_path']}' alt='" . ($category['Name']) . "' class='product-img'>";
                         echo "<span>" . ($category['Name']) . "</span>";
                         echo "</a>";
                     } 

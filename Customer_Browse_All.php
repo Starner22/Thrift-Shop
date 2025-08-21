@@ -260,7 +260,7 @@ $result = $sql->fetchAll(PDO::FETCH_ASSOC);
                     <h4>Quality</h4>
                     <div class="filter-group">
                         <?php
-                        $qualities = ['New', 'Like New', 'Very Good', 'Good', 'Fair', 'Poor'];
+                        $qualities = ['Excellent', 'Good', 'Normal', 'Subpar'];
                         foreach ($qualities as $quality){
                             $checked = in_array($quality, $quality_filter) ? 'checked' : '';
                             echo "<label class='checkbox-label'>";
