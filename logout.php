@@ -7,7 +7,7 @@ if (function_exists('getBaseUrl')) {
     require_once 'includes/auth.php';
     $baseUrl = getBaseUrl();
 } else {
-    $baseUrl = '/shop'; // Fallback
+    $baseUrl = '/Thrift-Shop-main'; // Fallback
 }
 
 header("Location: " . $baseUrl . "/index.php?message=logged_out");

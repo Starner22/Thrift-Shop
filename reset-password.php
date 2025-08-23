@@ -45,13 +45,13 @@ if (empty($token)) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Reset Password - Second-Hand Shop</title>
+    <title>Reset Password - Thrift Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="index.php" class="logo">🛍️ Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="login.php">Login</a></li>

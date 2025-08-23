@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->fetch()) {
     $token = bin2hex(random_bytes(50));
 
-    // ✅ Let MySQL generate expiry (1 hour from NOW)
+    // Let MySQL generate expiry (1 hour from NOW)
     $insert_stmt = $db->prepare("
         INSERT INTO password_resets (email, token, expires_at)
         VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Forgot Password - Second-Hand Shop</title>
+    <title>Forgot Password - Thrift Store</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>

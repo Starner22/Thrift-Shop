@@ -1,11 +1,15 @@
 <?php
 require_once '../config/database.php';
 require_once '../includes/auth.php';
+require_once '../includes/observer/DbNotificationObserver.php';
+require_once '../includes/observer/ProductSubject.php';
+require_once '../includes/observer/OrderSubject.php';
+require_once '../includes/observer/TicketSubject.php';
 
 requireAuth(['Admin', 'Moderator']);
 
-$database = Database::getInstance();
-$db = $database->getConnection();
+    $database = Database::getInstance();
+    $db = $database->getConnection();
 $success = '';
 $error = '';
 
@@ -20,7 +24,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
         $stmt = $db->prepare($query);
         
         if ($stmt->execute([$new_status, $product_id])) {
+            // get sellerID of this product
+            $seller_stmt = $db->prepare("SELECT sellerID FROM product WHERE productID = ?");
+            $seller_stmt->execute([$product_id]);
+            $sellerID = $seller_stmt->fetchColumn();
+
             $success = "Product has been successfully {$new_status}.";
+
+            // Use $db instead of $pdo
+            $ps = new ProductSubject($db, $product_id);
+            $ps->attach(new DbNotificationObserver($db, $sellerID));
+            
+            if ($new_status === 'approved') {
+                $ps->approve($sellerID);
+            } else {
+                $ps->reject($sellerID);
+            }
         } else {
             $error = "Failed to update product status.";
         }
@@ -80,7 +99,7 @@ $recent_products = $recent_stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <header>
         <nav>
-            <a href="../index.php" class="logo">🛍️ SecondHand Shop</a>
+            <a href="../index.php" class="logo">🛍️ Thrift Shop</a>
             <ul class="nav-links">
                 <li><a href="../dashboard.php">Dashboard</a></li>
                 <li><a href="products.php">Products</a></li>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Thrift Store</title>
+  <link rel="stylesheet" href="http://localhost/Thrift/Styles/style.css"/>
+</head>
+<body>
+  <div class="form-container">
+    <form action="php/login.php" method="POST" class="login-form">
+      <h2>Login</h2>
+      <label for="email">Email</label>
+      <input type="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" name="password" required />
+
+      <label for="role">Login as:</label>
+      <select name="role" required>
+        <option value="customer">Customer</option>
+        <option value="moderator">Moderator</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button type="submit" class="btn-primary">Login</button>
+      <p>Don't have an account? <a href="register.html">Register here</a></p>
+    </form>
+  </div>
+</body>
+</html>

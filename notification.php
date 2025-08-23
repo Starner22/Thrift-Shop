@@ -2,7 +2,7 @@
 require_once 'config/database.php';
 require_once 'includes/auth.php';
 
-requireAuth('Buyer');
+requireAuth(['Seller','Buyer']);
 
 $database = Database::getInstance();
 $db = $database->getConnection();
@@ -28,10 +28,8 @@ $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="index.php" class="logo">Thrift Store</a>
     <ul class="nav-links">
       <li><a href="index.php">Home</a></li>
-      <li><a href="profile.php">Profile</a></li>
-      <li><a href="orders.php">Orders</a></li>
       <li>
-        <a href="notifications.php">
+        <a href="notification.php">
           Notifications
           <?php
             // show unread count badge
