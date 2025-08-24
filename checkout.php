@@ -4,6 +4,10 @@ require_once 'includes/auth.php';
 require_once 'includes/facades/CheckoutFacade.php';
 require_once 'includes/strategies/CreditCardStrategy.php';
 require_once 'includes/strategies/PayPalStrategy.php';
+require_once '../includes/observer/DbNotificationObserver.php';
+require_once '../includes/observer/ProductSubject.php';
+require_once '../includes/observer/OrderSubject.php';
+require_once '../includes/observer/TicketSubject.php';
 
 requireAuth('Buyer');
 
@@ -51,6 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $checkout = new CheckoutFacade($db, $user_id);
                 $order_id = $checkout->placeOrder($shipping_details, $payment_strategy);
                 
+                $seller_stmt = $db->prepare("SELECT sellerID FROM product WHERE productID = ?");
+                $seller_stmt->execute([$product_id]);
+                $sellerID = $seller_stmt->fetchColumn();
+                $ps = new OrderSubject($db, $product_id);
+                $ps->attach(new DbNotificationObserver($db, $sellerID));
+                $ps->update($user_id,$sellerID);
+
                 header("Location: my-orders.php?order_success=true&order_id=" . $order_id);
                 exit();
             } catch (Exception $e) {

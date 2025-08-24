@@ -14,7 +14,8 @@ $new_sql = $db->prepare("SELECT p.productID AS ID, p.name AS name, p.price AS pr
             LIMIT 12");
 $new_sql->execute();
 $new_arrivals = $new_sql->fetchAll(PDO::FETCH_ASSOC);
-$all_category_sql = $db->prepare("SELECT categoryID, Name FROM Categories");
+
+$all_category_sql = $db->prepare("SELECT categoryID, Name , image_path FROM Categories");
 $all_category_sql->execute();
 $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -81,6 +82,7 @@ $all_category = $all_category_sql->fetchAll(PDO::FETCH_ASSOC);
                 if (!empty($all_category)) {    
                     foreach ($all_category as $category) {
                         echo "<a href='customer_browse_categorized.php?category=" . $category['categoryID'] . "' class='category-box'>";
+                        echo "<img src='{$category['image_path']}' alt='" . ($category['Name']) . "' class='product-img'>";
                         echo "<span>" . ($category['Name']) . "</span>";
                         echo "</a>";
                     } 

@@ -67,14 +67,12 @@ if ($user_role === 'Buyer') {
 <body>
     <header>
         <nav>
-            <a href="index.php" class="logo">🛍️ Thrift Store</a>
+            <a href="index.php" cl ass="logo">🛍️Thrift Store</a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="dashboard.php">Dashboard</a></li>
-                    <?php if (hasRole('Seller') || hasRole('Buyer')): ?>
-                 <li><a href="notification.php">Notifications</a></li>
-<?php endif; ?>
+                    <li><a href="notification.php">Notifications
             <?php
             // show unread count badge
             $countStmt = $db->prepare("SELECT COUNT(*) as unreadCount FROM notifications WHERE userID=? AND isRead=0");
